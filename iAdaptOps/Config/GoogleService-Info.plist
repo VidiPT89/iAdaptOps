@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyDbrNbpl5f9Qeq_IbIZrk3M9GjIKzXwvSw</string>
+	<string>AIzaSyBLQY2aR-DXXCGWWhGW_9vZ6dTMQy3BUXs</string>
 	<key>GCM_SENDER_ID</key>
-	<string>618033728790</string>
+	<string>711836273030</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>dev.ividi.iadaptops</string>
 	<key>PROJECT_ID</key>
-	<string>ispoonfit-vidi</string>
+	<string>iadaptops-vidi</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ispoonfit-vidi.firebasestorage.app</string>
+	<string>iadaptops-vidi.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:618033728790:ios:581e85d7e2cce62eb6d437</string>
+	<string>1:711836273030:ios:a76c4701c7e537a1354407</string>
 </dict>
 </plist>

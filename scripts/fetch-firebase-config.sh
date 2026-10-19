@@ -8,6 +8,6 @@ set -eu
 cd "$(dirname "$0")/.."
 # The CLI refuses to overwrite, so the old copy goes first.
 rm -f iAdaptOps/Config/GoogleService-Info.plist
-firebase apps:sdkconfig IOS 1:618033728790:ios:581e85d7e2cce62eb6d437 \
-  --project ispoonfit-vidi \
+firebase apps:sdkconfig IOS 1:711836273030:ios:a76c4701c7e537a1354407 \
+  --project iadaptops-vidi \
   --out iAdaptOps/Config/GoogleService-Info.plist

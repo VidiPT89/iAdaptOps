@@ -79,7 +79,7 @@ Build and run (`⌘R`) on the simulator or a connected device.
 
 ### Firebase
 
-The app talks to the Firebase project `ispoonfit-vidi`. Its iOS config lives in `iAdaptOps/Config/GoogleService-Info.plist`; after enabling a new sign-in provider in the console, refresh it with:
+The app talks to the Firebase project `iadaptops-vidi`. Its iOS config lives in `iAdaptOps/Config/GoogleService-Info.plist`; after enabling a new sign-in provider in the console, refresh it with:
 
 ```bash
 sh scripts/fetch-firebase-config.sh
