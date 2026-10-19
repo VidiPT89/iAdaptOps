@@ -5,12 +5,15 @@ struct DayDetailView: View {
     let viewModel: ProgramViewModel
 
     @State private var lowEnergy = false
+    @State private var seated = false
     @State private var activeDay: ProgramDay?
     @State private var shareText: SharePayload?
 
     let theme = Theme.shared
 
     private var params: WeekParams { SessionBuilder.params(for: day, lowEnergy: lowEnergy) }
+    /// The day as it would be played with the options chosen here.
+    private var shown: ProgramDay { lowEnergy && seated ? day.seatedVersion : day }
     private var isUnlocked: Bool { viewModel.isUnlocked(day) }
     private var isCompleted: Bool { viewModel.isCompleted(day) }
 
@@ -18,7 +21,7 @@ struct DayDetailView: View {
         ScrollView {
             VStack(spacing: 18) {
                 summary
-                block(.warmup, entries: day.warmup.map { ($0.ref, $0.seconds) })
+                block(.warmup, entries: shown.warmup.map { ($0.ref, $0.seconds) })
                 block(.workout, entries: workoutEntries)
                 block(.cooldown, entries: day.cooldown.map { ($0.ref, $0.seconds) })
 
@@ -28,7 +31,7 @@ struct DayDetailView: View {
                         icon: "play.fill"
                     ) {
                         Haptics.impact(.medium)
-                        activeDay = day
+                        activeDay = shown
                     }
                 } else {
                     Text(t("day.locked"))
@@ -48,14 +51,17 @@ struct DayDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    shareText = SharePayload(text: PlanTextExporter.text(for: day, lowEnergy: lowEnergy))
+                    shareText = SharePayload(text: PlanTextExporter.text(for: shown, lowEnergy: lowEnergy))
                 } label: {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .tint(theme.accent)
             }
         }
-        .onAppear { lowEnergy = viewModel.lowEnergyToday }
+        .onAppear {
+            lowEnergy = viewModel.lowEnergyToday
+            seated = viewModel.seatedToday
+        }
         .fullScreenCover(item: $activeDay) { day in
             SessionPlayerView(day: day, lowEnergy: lowEnergy, viewModel: viewModel)
         }
@@ -65,7 +71,7 @@ struct DayDetailView: View {
     }
 
     private var workoutEntries: [(ExerciseRef, Int)] {
-        let exercises = lowEnergy ? day.exercises.map(\.softened) : day.exercises
+        let exercises = lowEnergy ? shown.exercises.map(\.softened) : shown.exercises
         return exercises.map { ($0, params.work) }
     }
 
@@ -106,6 +112,21 @@ struct DayDetailView: View {
                 }
             }
             .tint(theme.ok)
+
+            if lowEnergy, day.hasSeatedVersion {
+                Toggle(isOn: $seated.animation(theme.snappyAnimation)) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(t("seated.title"))
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(theme.text)
+                        Text(t("seated.subtitle"))
+                            .font(.caption)
+                            .foregroundStyle(theme.textDim)
+                    }
+                }
+                .tint(theme.ok)
+                .transition(.opacity)
+            }
         }
         .padding(18)
         .panelBackground()

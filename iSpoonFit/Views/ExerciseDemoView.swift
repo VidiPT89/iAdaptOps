@@ -285,6 +285,7 @@ struct ExerciseDemoView: View {
 struct ExerciseDemoThumbnail: View {
     let ref: ExerciseRef
     var size: CGFloat = 52
+    var paceScale: Double = 1
 
     let theme = Theme.shared
 
@@ -292,7 +293,8 @@ struct ExerciseDemoThumbnail: View {
         ExerciseDemoView(
             ref: ref,
             lineWidth: 2.4,
-            showsArrows: false
+            showsArrows: false,
+            paceScale: paceScale
         )
         .frame(width: size, height: size)
         .background(theme.panel2)
@@ -306,14 +308,15 @@ struct ExerciseDemoThumbnail: View {
 
 extension ExerciseDemoView {
     /// Convenience initializer that reads the motion, the pace and whether to
-    /// draw bottles straight from a day's exercise reference.
-    init(ref: ExerciseRef, lineWidth: CGFloat = 5, showsArrows: Bool = true) {
+    /// draw bottles straight from a day's exercise reference. `paceScale`
+    /// above 1 slows the movement down, as on a low-energy day.
+    init(ref: ExerciseRef, lineWidth: CGFloat = 5, showsArrows: Bool = true, paceScale: Double = 1) {
         self.init(
             motion: ref.motion,
             lineWidth: lineWidth,
-            cycleDuration: ref.modifiers.isEmpty
+            cycleDuration: paceScale * (ref.modifiers.isEmpty
                 ? ref.motion.defaultCycleDuration
-                : ref.animationCycleDuration,
+                : ref.animationCycleDuration),
             showsBottles: ref.modifiers.contains(.weighted),
             showsArrows: showsArrows
         )

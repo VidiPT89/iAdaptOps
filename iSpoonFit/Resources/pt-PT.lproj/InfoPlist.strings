@@ -1,0 +1,3 @@
+/* Shown by iOS when the Health permission is requested. */
+"NSHealthUpdateUsageDescription" = "O iSpoonFit regista cada treino terminado na app Saúde.";
+"NSHealthShareUsageDescription" = "O iSpoonFit só regista treinos e nunca lê os teus dados de saúde.";

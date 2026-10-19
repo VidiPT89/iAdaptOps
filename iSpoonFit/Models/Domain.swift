@@ -146,7 +146,7 @@ struct TimedStep: Hashable {
 struct ProgramDay: Identifiable, Hashable {
     let index: Int
     let titleKey: String
-    let exercises: [ExerciseRef]
+    var exercises: [ExerciseRef]
     /// The opening moves. Fixed plans use the shared routine; a generated
     /// plan picks moves that suit the person.
     var warmup: [TimedStep] = ProgramData.warmupSteps
@@ -170,6 +170,51 @@ struct ProgramDay: Identifiable, Hashable {
     var params: WeekParams { paramsOverride ?? ProgramData.params(forWeek: week) }
 
     var isFinalDay: Bool { index == ProgramData.totalDays }
+
+    /// The same session done from a chair: every warm-up move and exercise
+    /// that is not already seated becomes a seated one with the same focus,
+    /// without repeating a move within a block. The closing stretches stay,
+    /// since they are already done at rest.
+    var seatedVersion: ProgramDay {
+        var copy = self
+        var usedInWarmup: [ExerciseID] = []
+        copy.warmup = warmup.map { step in
+            TimedStep(ref: Self.seated(step.ref, avoiding: &usedInWarmup), seconds: step.seconds)
+        }
+        var usedInWorkout: [ExerciseID] = []
+        copy.exercises = exercises.map { Self.seated($0, avoiding: &usedInWorkout) }
+        return copy
+    }
+
+    /// Whether the seated version changes anything, so the option is only
+    /// offered when it does.
+    var hasSeatedVersion: Bool { seatedVersion != self }
+
+    /// Seated moves with no joint loads, so they suit every plan.
+    private static let seatedMoves: [ExerciseID] = [
+        .seatedMarch, .seatedKneeExtension, .shoulderRolls, .diaphragmaticBreathing
+    ]
+
+    private static func seated(_ ref: ExerciseRef, avoiding used: inout [ExerciseID]) -> ExerciseRef {
+        let info = ExerciseCareInfo.info(ref.exercise)
+        if info.position == .seated, !used.contains(ref.exercise) {
+            used.append(ref.exercise)
+            return ref
+        }
+        let preferred: [ExerciseID]
+        if info.focus.contains(.lowerStrength) {
+            preferred = [.seatedKneeExtension, .seatedMarch]
+        } else if info.focus.contains(.upperStrength) || info.focus.contains(.mobility) {
+            preferred = [.shoulderRolls, .seatedMarch]
+        } else if info.focus.contains(.breathing) {
+            preferred = [.diaphragmaticBreathing]
+        } else {
+            preferred = [.seatedMarch, .diaphragmaticBreathing]
+        }
+        let pick = (preferred + seatedMoves).first { !used.contains($0) } ?? .seatedMarch
+        used.append(pick)
+        return ExerciseRef(pick)
+    }
 
     /// Distinct focus areas across the day's exercises, for the chips on the
     /// Today card.

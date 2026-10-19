@@ -10,6 +10,8 @@ struct SettingsView: View {
     @State private var soundsEnabled = SessionAudio.soundsEnabled
     @State private var voiceEnabled = SessionAudio.voiceEnabled
     @State private var hapticsEnabled = Haptics.isEnabled
+    @State private var healthEnabled = HealthWorkouts.isEnabled
+    @State private var healthDenied = false
     @State private var reminderEnabled: Bool
     @State private var reminderTime: Date
     @State private var startDate: Date
@@ -143,8 +145,43 @@ struct SettingsView: View {
                     .onChange(of: voiceEnabled) { _, value in SessionAudio.voiceEnabled = value }
                 toggleRow("settings.haptics", icon: "iphone.radiowaves.left.and.right", isOn: $hapticsEnabled)
                     .onChange(of: hapticsEnabled) { _, value in Haptics.isEnabled = value }
+
+                if HealthWorkouts.isAvailable {
+                    toggleRow("settings.health", icon: "heart.fill", isOn: healthBinding)
+                    Text(t(healthDenied ? "settings.healthDenied" : "settings.healthNote"))
+                        .font(.caption)
+                        .foregroundStyle(healthDenied ? theme.danger : theme.textFaint)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
+    }
+
+    /// Asks Health for permission when switched on, and flips back off with a
+    /// hint when it was not granted.
+    private var healthBinding: Binding<Bool> {
+        Binding(
+            get: { healthEnabled },
+            set: { value in
+                healthEnabled = value
+                healthDenied = false
+                guard value else {
+                    HealthWorkouts.isEnabled = false
+                    return
+                }
+                Task {
+                    let granted = await HealthWorkouts.requestAccess()
+                    HealthWorkouts.isEnabled = granted
+                    if !granted {
+                        withAnimation(theme.snappyAnimation) {
+                            healthEnabled = false
+                            healthDenied = true
+                        }
+                    }
+                }
+            }
+        )
     }
 
     private var remindersCard: some View {

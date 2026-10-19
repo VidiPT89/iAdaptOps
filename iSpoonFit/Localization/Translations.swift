@@ -77,6 +77,11 @@ enum Translations {
             .pt: "Menos uma volta, mais descanso, versões mais fáceis",
             .en: "One fewer round, more rest, easier versions"
         ],
+        "seated.title": [.pt: "Versão sentada", .en: "Seated version"],
+        "seated.subtitle": [
+            .pt: "Aquecimento e exercícios feitos na cadeira",
+            .en: "Warm-up and exercises done from a chair"
+        ],
 
         // MARK: Focus areas and categories
         "focus.core": [.pt: "Core", .en: "Core"],
@@ -109,6 +114,15 @@ enum Translations {
         "settings.sound": [.pt: "Sons", .en: "Sounds"],
         "settings.voice": [.pt: "Voz de contagem", .en: "Voice countdown"],
         "settings.haptics": [.pt: "Vibração", .en: "Haptics"],
+        "settings.health": [.pt: "Registar na app Saúde", .en: "Save to the Health app"],
+        "settings.healthNote": [
+            .pt: "Cada treino terminado fica registado como treino na app Saúde. O iSpoonFit não lê nada da app Saúde.",
+            .en: "Each finished session is saved as a workout in the Health app. iSpoonFit never reads anything from Health."
+        ],
+        "settings.healthDenied": [
+            .pt: "Sem autorização. Ativa-a em Definições › Saúde › Acesso a dados e dispositivos › iSpoonFit.",
+            .en: "Not allowed. Turn it on in Settings › Health › Data Access & Devices › iSpoonFit."
+        ],
         "settings.reminders": [.pt: "Lembretes", .en: "Reminders"],
         "settings.reminderTime": [.pt: "Hora do lembrete", .en: "Reminder time"],
         "settings.remindersDenied": [

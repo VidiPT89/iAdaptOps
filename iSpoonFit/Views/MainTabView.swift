@@ -5,10 +5,23 @@ struct MainTabView: View {
     let auth: AuthService
     let onAccountDeleted: () -> Void
 
-    @State private var selection: Tab = .today
+    @State private var selection: Tab = Self.initialTab
     @Namespace private var indicator
 
     let theme = Theme.shared
+
+    private static var initialTab: Tab {
+        #if DEBUG
+        switch DebugLaunch.tab {
+        case "program": return .program
+        case "exercises": return .exercises
+        case "settings": return .settings
+        default: return .today
+        }
+        #else
+        return .today
+        #endif
+    }
 
     enum Tab: Int, CaseIterable, Identifiable {
         case today, program, exercises, settings
@@ -70,6 +83,9 @@ struct MainTabView: View {
         }
         .padding(.top, 10)
         .padding(.bottom, 6)
+        // Like the system tab bar, the labels grow only so far: at the
+        // accessibility sizes four of them no longer fit side by side.
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .background {
             theme.panel
                 .overlay(

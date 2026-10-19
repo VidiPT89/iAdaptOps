@@ -27,21 +27,37 @@ final class ProgramViewModel {
 
     /// Reset every calendar day, so "low-energy" never silently carries over.
     var lowEnergyToday: Bool {
-        didSet { persistLowEnergy() }
+        didSet { Self.persist(lowEnergyToday, key: Self.lowEnergyKey) }
+    }
+
+    /// The seated version of today's session, offered on low-energy days and
+    /// reset every calendar day in the same way.
+    var seatedToday: Bool {
+        didSet { Self.persist(seatedToday, key: Self.seatedKey) }
     }
 
     init() {
-        let storedDay = UserDefaults.standard.object(forKey: Self.lowEnergyDayKey) as? Date
-        let isToday = storedDay.map { Calendar.current.isDateInToday($0) } ?? false
-        lowEnergyToday = isToday && UserDefaults.standard.bool(forKey: Self.lowEnergyKey)
+        lowEnergyToday = Self.storedToday(key: Self.lowEnergyKey)
+        seatedToday = Self.storedToday(key: Self.seatedKey)
     }
 
     private static let lowEnergyKey = "lowEnergyToday"
-    private static let lowEnergyDayKey = "lowEnergyTodayDate"
+    private static let seatedKey = "seatedToday"
 
-    private func persistLowEnergy() {
-        UserDefaults.standard.set(lowEnergyToday, forKey: Self.lowEnergyKey)
-        UserDefaults.standard.set(Date(), forKey: Self.lowEnergyDayKey)
+    private static func storedToday(key: String) -> Bool {
+        let storedDay = UserDefaults.standard.object(forKey: key + "Date") as? Date
+        let isToday = storedDay.map { Calendar.current.isDateInToday($0) } ?? false
+        return isToday && UserDefaults.standard.bool(forKey: key)
+    }
+
+    private static func persist(_ value: Bool, key: String) {
+        UserDefaults.standard.set(value, forKey: key)
+        UserDefaults.standard.set(Date(), forKey: key + "Date")
+    }
+
+    /// The day as it will be played today: seated when that was chosen.
+    func playable(_ day: ProgramDay) -> ProgramDay {
+        lowEnergyToday && seatedToday ? day.seatedVersion : day
     }
 
     // MARK: - Loading
@@ -101,6 +117,7 @@ final class ProgramViewModel {
         // Sendable and would not compile in the Swift 6 language mode.
         let all = (try? context.fetch(FetchDescriptor<CompletedSession>())) ?? []
         sessions = all.sorted { $0.date > $1.date }
+        WidgetBridge.update(from: self)
     }
 
     var hasOnboarded: Bool { state != nil }
@@ -271,8 +288,11 @@ final class ProgramViewModel {
         context.insert(session)
         try? context.save()
         lowEnergyToday = false
+        seatedToday = false
         refresh()
         push(session)
+        let end = session.date
+        Task { await HealthWorkouts.save(end: end, durationSeconds: durationSeconds) }
     }
 
     func delete(_ session: CompletedSession) {
@@ -294,6 +314,7 @@ final class ProgramViewModel {
         state?.updatedAt = .now
         try? context.save()
         lowEnergyToday = false
+        seatedToday = false
         refresh()
         removeRemoteSessions(ids)
         pushState()
@@ -302,9 +323,14 @@ final class ProgramViewModel {
     /// Clears what this device keeps outside the account's store, so the
     /// next person to sign in on it starts clean.
     static func clearDeviceState() {
-        UserDefaults.standard.removeObject(forKey: lowEnergyKey)
-        UserDefaults.standard.removeObject(forKey: lowEnergyDayKey)
+        for key in [lowEnergyKey, seatedKey] {
+            UserDefaults.standard.removeObject(forKey: key)
+            UserDefaults.standard.removeObject(forKey: key + "Date")
+        }
         ReminderManager.cancelAll()
+        // The Health app belongs to the phone's owner, not to whoever signs in next.
+        HealthWorkouts.isEnabled = false
+        WidgetBridge.clear()
     }
 
     // MARK: - Achievements

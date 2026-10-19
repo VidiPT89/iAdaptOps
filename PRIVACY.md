@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**iSpoonFit** · Last updated: 24 September 2026
+**iSpoonFit** · Last updated: 19 October 2026
 
 iSpoonFit needs an account so your programme and progress follow you between devices. This policy explains what that account stores and nothing more.
 
@@ -15,13 +15,17 @@ This data is stored with Google Firebase (Authentication and Cloud Firestore) in
 
 ## What stays on your device
 
-Language, appearance, sounds, voice, haptics and reminder days are kept only on the device. A copy of your progress is also kept on the device so the app works offline; it syncs when a connection is available.
+Language, appearance, sounds, voice, haptics and reminder days are kept only on the device. A copy of your progress is also kept on the device so the app works offline; it syncs when a connection is available. The home-screen widget reads a short summary (sessions done and the next workout) that the app keeps on the device for it.
+
+## Apple Health
+
+If you turn on **Settings → During the workout → Save to the Health app**, each finished session is saved to Apple Health as a workout (start, end and type). The app only writes workouts: it never reads anything from Health, and Health data is never sent to the cloud, to the administrator or to anyone else. You can turn this off at any time in the app or in the Health app.
 
 ## What the app does not do
 
 - No analytics, advertising or tracking
 - No selling or sharing of your data with anyone
-- No access to Health, location, contacts, camera or microphone
+- No reading of Health data, and no access to location, contacts, camera or microphone
 
 ## Notifications
 

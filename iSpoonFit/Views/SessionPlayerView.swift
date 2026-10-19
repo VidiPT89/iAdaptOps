@@ -101,7 +101,7 @@ struct SessionPlayerView: View {
             header
             Spacer(minLength: 8)
 
-            ExerciseDemoView(ref: player.displayedRef, lineWidth: 5.5)
+            ExerciseDemoView(ref: player.displayedRef, lineWidth: 5.5, paceScale: player.lowEnergy ? SessionBuilder.lowEnergyPace : 1)
                 .frame(maxWidth: .infinity)
                 .frame(minHeight: 130, maxHeight: 200)
                 .opacity(player.isPaused ? 0.35 : 1)
@@ -240,7 +240,7 @@ struct SessionPlayerView: View {
                     Text(t("session.next"))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(theme.textFaint)
-                    ExerciseDemoThumbnail(ref: player.displayedRef, size: 38)
+                    ExerciseDemoThumbnail(ref: player.displayedRef, size: 38, paceScale: player.lowEnergy ? SessionBuilder.lowEnergyPace : 1)
                     Text(t(player.displayedRef.catalogEntry.nameKey))
                         .font(.subheadline.weight(.medium))
                         .foregroundStyle(theme.text)

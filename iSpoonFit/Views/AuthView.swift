@@ -277,12 +277,16 @@ struct AuthView: View {
         VStack(spacing: 12) {
             appleButton
 
-            providerButton("auth.continueGoogle", mark: AnyView(GoogleMark())) {
-                Task { await auth.signInWithGoogle() }
+            if FirebaseSetup.isGoogleAvailable {
+                providerButton("auth.continueGoogle", mark: AnyView(GoogleMark())) {
+                    Task { await auth.signInWithGoogle() }
+                }
             }
 
-            providerButton("auth.continueMicrosoft", mark: AnyView(MicrosoftMark())) {
-                Task { await auth.signInWithMicrosoft() }
+            if FirebaseSetup.isMicrosoftAvailable {
+                providerButton("auth.continueMicrosoft", mark: AnyView(MicrosoftMark())) {
+                    Task { await auth.signInWithMicrosoft() }
+                }
             }
         }
     }

@@ -8,6 +8,7 @@ struct TodayView: View {
     @State private var activeDay: ProgramDay?
     @State private var appeared = false
     @State private var showsQuestionnaire = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let theme = Theme.shared
 
@@ -107,8 +108,13 @@ struct TodayView: View {
         .panelBackground(highlighted: true)
     }
 
+    /// Side by side normally; stacked at the accessibility text sizes, where
+    /// the chips would otherwise be squeezed to a letter per line.
     private var progressCard: some View {
-        HStack(spacing: 18) {
+        let stacked = dynamicTypeSize.isAccessibilitySize
+        let outer = stacked ? AnyLayout(VStackLayout(alignment: .leading, spacing: 14)) : AnyLayout(HStackLayout(spacing: 18))
+        let chips = stacked ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
+        return outer {
             ProgressRing(
                 progress: viewModel.progress,
                 lineWidth: 9,
@@ -122,13 +128,14 @@ struct TodayView: View {
                     .font(.headline)
                     .foregroundStyle(theme.text)
 
-                HStack(spacing: 8) {
+                chips {
                     ChipView(text: "\(viewModel.weeksCompleted) \(t("today.weeksDone"))", icon: "calendar")
                     ChipView(text: "\(viewModel.totalMinutes) min", icon: "clock.fill")
                 }
             }
             Spacer(minLength: 0)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(18)
         .panelBackground()
     }
@@ -152,9 +159,10 @@ struct TodayView: View {
                 )
             }
 
-            if !day.focusKeys.isEmpty {
+            let focusKeys = viewModel.playable(day).focusKeys
+            if !focusKeys.isEmpty {
                 HStack(spacing: 8) {
-                    ForEach(day.focusKeys, id: \.self) { key in
+                    ForEach(focusKeys, id: \.self) { key in
                         ChipView(text: t(key))
                     }
                     Spacer(minLength: 0)
@@ -164,7 +172,11 @@ struct TodayView: View {
             VStack(spacing: 10) {
                 ForEach(exercises(for: day)) { ref in
                     HStack(spacing: 12) {
-                        ExerciseDemoThumbnail(ref: ref, size: 46)
+                        ExerciseDemoThumbnail(
+                            ref: ref,
+                            size: 46,
+                            paceScale: viewModel.lowEnergyToday ? SessionBuilder.lowEnergyPace : 1
+                        )
                         VStack(alignment: .leading, spacing: 2) {
                             Text(t(ref.catalogEntry.nameKey))
                                 .font(.subheadline.weight(.medium))
@@ -182,9 +194,14 @@ struct TodayView: View {
 
             lowEnergyToggle
 
+            if viewModel.lowEnergyToday, day.hasSeatedVersion {
+                seatedToggle
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
             GradientButton(titleKey: "today.start", icon: "play.fill") {
                 Haptics.impact(.medium)
-                activeDay = day
+                activeDay = viewModel.playable(day)
             }
         }
         .padding(18)
@@ -192,37 +209,60 @@ struct TodayView: View {
     }
 
     private func exercises(for day: ProgramDay) -> [ExerciseRef] {
-        viewModel.lowEnergyToday ? day.exercises.map(\.softened) : day.exercises
+        let played = viewModel.playable(day)
+        return viewModel.lowEnergyToday ? played.exercises.map(\.softened) : played.exercises
     }
 
     private var lowEnergyToggle: some View {
+        optionToggle(
+            icon: "leaf.fill",
+            titleKey: "lowEnergy.title",
+            subtitleKey: "lowEnergy.subtitle",
+            isOn: Binding(
+                get: { viewModel.lowEnergyToday },
+                set: { viewModel.lowEnergyToday = $0 }
+            )
+        )
+    }
+
+    private var seatedToggle: some View {
+        optionToggle(
+            icon: "chair.fill",
+            titleKey: "seated.title",
+            subtitleKey: "seated.subtitle",
+            isOn: Binding(
+                get: { viewModel.seatedToday },
+                set: { viewModel.seatedToday = $0 }
+            )
+        )
+    }
+
+    private func optionToggle(icon: String, titleKey: String, subtitleKey: String, isOn: Binding<Bool>) -> some View {
         Button {
             Haptics.selection()
-            withAnimation(theme.snappyAnimation) { viewModel.lowEnergyToday.toggle() }
+            withAnimation(theme.snappyAnimation) { isOn.wrappedValue.toggle() }
         } label: {
             HStack(spacing: 12) {
-                Image(systemName: "leaf.fill")
+                Image(systemName: icon)
                     .font(.subheadline)
-                    .foregroundStyle(viewModel.lowEnergyToday ? theme.ok : theme.textFaint)
+                    .foregroundStyle(isOn.wrappedValue ? theme.ok : theme.textFaint)
                     .symbolRenderingMode(.hierarchical)
+                    .frame(width: 20)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(t("lowEnergy.title"))
+                    Text(t(titleKey))
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(theme.text)
-                    Text(t("lowEnergy.subtitle"))
+                    Text(t(subtitleKey))
                         .font(.caption)
                         .foregroundStyle(theme.textDim)
                         .multilineTextAlignment(.leading)
                 }
                 Spacer(minLength: 0)
 
-                Toggle("", isOn: Binding(
-                    get: { viewModel.lowEnergyToday },
-                    set: { viewModel.lowEnergyToday = $0 }
-                ))
-                .labelsHidden()
-                .tint(theme.ok)
+                Toggle("", isOn: isOn.animation(theme.snappyAnimation))
+                    .labelsHidden()
+                    .tint(theme.ok)
             }
             .padding(14)
             .background(

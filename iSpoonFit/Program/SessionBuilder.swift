@@ -8,6 +8,10 @@ enum SessionBuilder {
     /// (never below one), ten seconds off the work (never below 15) and ten
     /// onto the rest. Care plans already start at two rounds of 20 seconds, so
     /// the floor has to sit below that for the mode to change anything.
+    /// How much slower the demonstrations move on a low-energy day, so the
+    /// figure models an unhurried pace.
+    static let lowEnergyPace = 1.5
+
     static func params(for day: ProgramDay, lowEnergy: Bool) -> WeekParams {
         let base = day.params
         guard lowEnergy else { return base }

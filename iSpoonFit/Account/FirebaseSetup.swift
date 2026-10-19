@@ -10,6 +10,9 @@ enum FirebaseSetup {
     private(set) static var isConfigured = false
 
     static func configure() {
+        #if DEBUG
+        if DebugLaunch.isGuest { return }
+        #endif
         guard !isConfigured,
               Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") != nil
         else { return }
@@ -33,4 +36,9 @@ enum FirebaseSetup {
     static var isGoogleAvailable: Bool {
         isConfigured && FirebaseApp.app()?.options.clientID != nil
     }
+
+    /// Microsoft needs an Azure app registered in the Firebase console, which
+    /// nothing in the config file reflects. Off until that is done, so nobody
+    /// is offered a button that can only fail.
+    static let isMicrosoftAvailable = false
 }

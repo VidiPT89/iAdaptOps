@@ -36,6 +36,9 @@ struct RootView: View {
         .animation(theme.springAnimation, value: session?.viewModel.hasOnboarded)
         .onAppear {
             theme.systemIsDark = systemColorScheme == .dark
+            #if DEBUG
+            if DebugLaunch.isGuest { auth.continueAsGuest() }
+            #endif
         }
         .task(id: auth.user?.uid) {
             await openSession(for: auth.user)
@@ -90,6 +93,9 @@ struct RootView: View {
         await newSession.viewModel.synchronize()
         // Signed out, or switched account, while the sync was running.
         guard !Task.isCancelled else { return }
+        #if DEBUG
+        if DebugLaunch.isGuest { DebugLaunch.seed(newSession.viewModel) }
+        #endif
         newSession.viewModel.rescheduleReminderIfNeeded()
         session = newSession
         isSyncing = false

@@ -12,7 +12,7 @@
 
 ## ✨ Features
 
-- ✅ Personal accounts: sign up with email and password, or continue with Apple, Google or Microsoft
+- ✅ Personal accounts: sign up with email and password or continue with Apple; Google and Microsoft appear once they are enabled in the Firebase console
 - ✅ One admin account with a private panel: every account's progress and check-ins, program assignment and profiles prepared ahead of time by email
 - ✅ Progress synced to your account with Cloud Firestore, so it follows you to any iPhone or iPad, and keeps working offline
 - ✅ A health questionnaire at sign-up (conditions, limitations, energy, age, weight) that generates a personal 28-session care plan on the device
@@ -22,7 +22,10 @@
 - ✅ Stick-figure animations drawn live with `Canvas` and `TimelineView`: every movement is generated from code, no video and no image assets
 - ✅ Guided session player with a date-anchored timer that never drifts, even if the screen locks mid-set
 - ✅ Spoken countdown, interval sounds and haptics, with a "switch sides" cue halfway through every unilateral exercise; your music keeps playing and only dips while the voice speaks
-- ✅ Low-energy mode: shorter work intervals, longer rests, one round fewer and no added load, decided per day
+- ✅ Low-energy mode: shorter work intervals, longer rests, one round fewer, no added load and slower demonstrations, decided per day
+- ✅ Seated version on low-energy days: the warm-up and every exercise swap to chair-based moves with the same focus
+- ✅ Home-screen and lock-screen widget with today's workout, rest days and your progress ring
+- ✅ Optional Apple Health integration: each finished session is saved as a workout (write-only, nothing is ever read)
 - ✅ Progress tracking with a session history, weekly progress, total minutes and five unlockable achievements
 - ✅ Local workout reminders at the time and on the weekdays you choose (Monday to Thursday by default)
 - ✅ Exercise library with step-by-step instructions, breathing cues, common mistakes and an easier version of every movement
@@ -46,6 +49,8 @@
 | Sign-in | Email/password, Sign in with Apple, Google Sign-In, Microsoft (OAuth) |
 | Audio | AVSpeechSynthesizer + system sounds (no audio files) |
 | Notifications | UserNotifications |
+| Widget | WidgetKit (App Group shared with the app) |
+| Health | HealthKit (workouts, write-only) |
 | Project | XcodeGen |
 | Min. iOS | 17.0 |
 

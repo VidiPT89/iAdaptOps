@@ -216,7 +216,7 @@ final class AuthService {
     /// confirmed from the verification link, and refreshes the token the
     /// database rules read.
     func refreshUser() async {
-        guard let user = Auth.auth().currentUser else { return }
+        guard FirebaseSetup.isConfigured, let user = Auth.auth().currentUser else { return }
         try? await user.reload()
         _ = try? await user.getIDTokenResult(forcingRefresh: true)
         if let current = Auth.auth().currentUser {
@@ -244,11 +244,20 @@ final class AuthService {
     /// the user's progress first, while the rules still let them reach it.
     /// Returns false when Firebase needs a fresh sign-in before deleting.
     func deleteAccount(removeData: () async throws -> Void) async -> Bool {
-        guard let user = Auth.auth().currentUser else { return false }
-        let lastSignIn = user.metadata.lastSignInDate ?? .distantPast
-        guard Date().timeIntervalSince(lastSignIn) < 5 * 60 else {
-            errorKey = "auth.error.recentLogin"
-            return false
+        guard FirebaseSetup.isConfigured, let user = Auth.auth().currentUser else { return false }
+        // Apple accounts confirm with Apple once more: that is the fresh
+        // sign-in Firebase wants, and it gives the code that revokes the
+        // app's access to the Apple ID, as App Review requires.
+        var appleCode: String?
+        if user.providerData.contains(where: { $0.providerID == "apple.com" }) {
+            guard let code = await reauthenticateWithApple() else { return false }
+            appleCode = code
+        } else {
+            let lastSignIn = user.metadata.lastSignInDate ?? .distantPast
+            guard Date().timeIntervalSince(lastSignIn) < 5 * 60 else {
+                errorKey = "auth.error.recentLogin"
+                return false
+            }
         }
         var deleted = false
         await run {
@@ -258,6 +267,11 @@ final class AuthService {
                 // Nothing was deleted; most often there is no connection.
                 throw AuthFailure.cloudUnreachable
             }
+            if let appleCode {
+                // Only reaches Apple once the Apple key is set up in the
+                // Firebase console; the account is deleted either way.
+                try? await Auth.auth().revokeToken(withAuthorizationCode: appleCode)
+            }
             // Looked up again rather than captured: the account object is
             // not safe to hand across to the SDK's own tasks.
             try await Auth.auth().currentUser?.delete()
@@ -265,6 +279,33 @@ final class AuthService {
             deleted = true
         }
         return deleted
+    }
+
+    /// Signs in with Apple again for the current account. Returns Apple's
+    /// one-time authorization code, or nil when it was cancelled or failed.
+    private func reauthenticateWithApple() async -> String? {
+        errorKey = nil
+        let nonce = Self.randomNonce()
+        do {
+            let authorization = try await AppleSignInRequest().perform { request in
+                request.nonce = Self.sha256(nonce)
+            }
+            guard let apple = authorization.credential as? ASAuthorizationAppleIDCredential,
+                  let tokenData = apple.identityToken,
+                  let idToken = String(data: tokenData, encoding: .utf8),
+                  let codeData = apple.authorizationCode,
+                  let code = String(data: codeData, encoding: .utf8)
+            else {
+                errorKey = "auth.error.generic"
+                return nil
+            }
+            let credential = OAuthProvider.appleCredential(withIDToken: idToken, rawNonce: nonce, fullName: nil)
+            try await Auth.auth().currentUser?.reauthenticate(with: credential)
+            return code
+        } catch {
+            report(error)
+            return nil
+        }
     }
 
     // MARK: - Helpers

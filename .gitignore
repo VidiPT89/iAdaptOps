@@ -10,3 +10,5 @@ iSpoonFit/Info.plist
 iSpoonFit/iSpoonFit.entitlements
 node_modules/
 *-debug.log
+iSpoonFitWidget/Info.plist
+iSpoonFitWidget/iSpoonFitWidget.entitlements
