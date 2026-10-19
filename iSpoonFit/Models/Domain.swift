@@ -85,7 +85,6 @@ struct Exercise: Identifiable, Hashable {
     let category: ExerciseCategory
     let motion: ExerciseMotionKind
     let isUnilateral: Bool
-    let isAlternating: Bool
     let muscleKeys: [String]
 }
 
@@ -104,19 +103,21 @@ struct ExerciseRef: Codable, Hashable, Identifiable {
     var catalogEntry: Exercise { ExerciseCatalog.exercise(exercise) }
 
     /// "Agachamento sumo · com garrafas"
+    @MainActor
     var displayName: String {
         let base = t(catalogEntry.nameKey)
         guard !modifiers.isEmpty else { return base }
         return base + " · " + modifiers.map { t($0.labelKey) }.joined(separator: ", ")
     }
 
+    @MainActor
     var modifierLabel: String? {
         guard !modifiers.isEmpty else { return nil }
         return modifiers.map { t($0.labelKey) }.joined(separator: " · ")
     }
 
-    /// Removing the load and softening the pulse is what "low-energy day" does
-    /// to each exercise, before the timing changes are applied.
+    /// Removing the load is what "low-energy day" does to each exercise,
+    /// before the timing changes are applied.
     var softened: ExerciseRef {
         ExerciseRef(exercise, modifiers: modifiers.filter { $0 != .weighted })
     }

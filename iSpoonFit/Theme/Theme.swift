@@ -71,6 +71,7 @@ struct ThemePalette {
 /// Live, observable brand theme. Views read `Theme.shared` colors directly;
 /// switching `mode` (or the system appearance, when following it) updates
 /// every screen automatically since Observation tracks the property reads.
+@MainActor
 @Observable
 final class Theme {
     static let shared = Theme()

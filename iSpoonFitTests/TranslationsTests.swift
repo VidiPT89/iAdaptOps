@@ -1,6 +1,7 @@
 import XCTest
 @testable import iSpoonFit
 
+@MainActor
 final class TranslationsTests: XCTestCase {
     private func assertPresent(_ key: String, file: StaticString = #filePath, line: UInt = #line) {
         guard let entry = Translations.table[key] else {
@@ -224,6 +225,7 @@ final class TranslationsTests: XCTestCase {
             XCTAssertTrue(text.contains(t("block.cooldown")))
             XCTAssertFalse(text.contains("exercise."), "Untranslated key leaked into the shared text")
             XCTAssertFalse(text.contains("day."), "Untranslated key leaked into the shared text")
+            XCTAssertFalse(text.contains("—"), "The shared text should not use em dashes")
         }
     }
 }

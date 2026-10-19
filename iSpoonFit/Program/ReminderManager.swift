@@ -3,6 +3,7 @@ import UserNotifications
 
 /// Local-only workout reminders. Nothing leaves the device: these are
 /// scheduled by iOS and delivered by iOS.
+@MainActor
 enum ReminderManager {
     /// Calendar weekday numbers (1 = Sunday ... 7 = Saturday) in the order the
     /// week is shown, Monday first.

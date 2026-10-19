@@ -80,6 +80,7 @@ struct RootView: View {
         guard let user else {
             if session != nil { ProgramViewModel.clearDeviceState() }
             session = nil
+            isSyncing = false
             return
         }
         guard session?.uid != user.uid else { return }

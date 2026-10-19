@@ -97,8 +97,10 @@ final class ProgramViewModel {
     func refresh() {
         guard let context else { return }
         state = (try? context.fetch(FetchDescriptor<ProgramState>()))?.first
-        let descriptor = FetchDescriptor<CompletedSession>(sortBy: [SortDescriptor(\.date, order: .reverse)])
-        sessions = (try? context.fetch(descriptor)) ?? []
+        // Sorted here rather than with a SortDescriptor, whose key path is not
+        // Sendable and would not compile in the Swift 6 language mode.
+        let all = (try? context.fetch(FetchDescriptor<CompletedSession>())) ?? []
+        sessions = all.sorted { $0.date > $1.date }
     }
 
     var hasOnboarded: Bool { state != nil }

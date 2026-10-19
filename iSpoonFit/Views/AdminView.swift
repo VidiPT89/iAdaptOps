@@ -276,6 +276,7 @@ struct VariantPicker: View {
     }
 }
 
+@MainActor
 enum AdminFormat {
     static func date(_ date: Date, time: Bool = false) -> String {
         let formatter = DateFormatter()
@@ -287,6 +288,7 @@ enum AdminFormat {
 }
 
 private extension View {
+    @MainActor
     func adminField() -> some View {
         let theme = Theme.shared
         return self

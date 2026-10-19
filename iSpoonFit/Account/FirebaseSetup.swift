@@ -5,6 +5,7 @@ import GoogleSignIn
 /// Starts Firebase once, at launch, if the app was built with its
 /// configuration file. Everything account-related checks `isConfigured`
 /// first, so a build without the file still opens instead of crashing.
+@MainActor
 enum FirebaseSetup {
     private(set) static var isConfigured = false
 

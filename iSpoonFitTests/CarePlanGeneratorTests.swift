@@ -173,6 +173,7 @@ final class CarePlanGeneratorTests: XCTestCase {
         XCTAssertEqual(profile.sanitized.otherConditions, "Enxaqueca")
     }
 
+    @MainActor
     func testEveryAnswerHasATranslation() {
         for key in ChronicCondition.allCases.map(\.titleKey)
             + PhysicalLimitation.allCases.map(\.titleKey)

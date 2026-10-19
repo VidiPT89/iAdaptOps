@@ -258,7 +258,9 @@ final class AuthService {
                 // Nothing was deleted; most often there is no connection.
                 throw AuthFailure.cloudUnreachable
             }
-            try await user.delete()
+            // Looked up again rather than captured: the account object is
+            // not safe to hand across to the SDK's own tasks.
+            try await Auth.auth().currentUser?.delete()
             GIDSignIn.sharedInstance.signOut()
             deleted = true
         }

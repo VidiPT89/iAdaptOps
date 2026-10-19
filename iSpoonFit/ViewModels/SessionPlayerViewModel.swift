@@ -42,18 +42,6 @@ final class SessionPlayerViewModel {
     /// that is the one coming up.
     var displayedRef: ExerciseRef { currentStep.ref }
 
-    var totalSeconds: Int { steps.reduce(0) { $0 + $1.seconds } }
-
-    var elapsedSeconds: Int {
-        let before = steps.prefix(index).reduce(0) { $0 + $1.seconds }
-        return before + max(0, currentStep.seconds - remaining)
-    }
-
-    var progress: Double {
-        guard totalSeconds > 0 else { return 0 }
-        return min(1, Double(elapsedSeconds) / Double(totalSeconds))
-    }
-
     /// 1 → 0 across the current step, for the countdown ring.
     var stepProgress: Double {
         guard currentStep.seconds > 0 else { return 0 }
@@ -91,7 +79,8 @@ final class SessionPlayerViewModel {
         ticker = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 100_000_000)
-                self?.tick()
+                guard let self else { return }
+                self.tick()
             }
         }
     }

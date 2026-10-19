@@ -31,6 +31,7 @@ enum Lang: String, CaseIterable {
 
 /// App language, independent of the device locale and persisted across
 /// launches. Defaults to European Portuguese.
+@MainActor
 @Observable
 final class LocalizationManager {
     static let shared = LocalizationManager()
@@ -57,10 +58,12 @@ final class LocalizationManager {
 /// Global shorthand used by every view. Reading it inside a `body` makes that
 /// view re-render when the language changes, because `LocalizationManager` is
 /// observable and `current` is read on each lookup.
+@MainActor
 func t(_ key: String) -> String {
     LocalizationManager.shared.t(key)
 }
 
+@MainActor
 func t(_ key: String, _ arguments: CVarArg...) -> String {
     String(
         format: LocalizationManager.shared.t(key),
@@ -71,6 +74,7 @@ func t(_ key: String, _ arguments: CVarArg...) -> String {
 
 /// Nil when the key has no entry, which is how optional coaching sections
 /// (a common mistake, a caution note) decide whether to show at all.
+@MainActor
 func tIfPresent(_ key: String) -> String? {
     Translations.table[key]?[LocalizationManager.shared.current]
 }
