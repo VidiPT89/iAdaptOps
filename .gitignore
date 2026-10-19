@@ -6,9 +6,9 @@ build/
 *.xcodeproj/xcuserdata/
 *.xcodeproj/project.xcworkspace/xcuserdata/
 *.xcodeproj/
-iSpoonFit/Info.plist
-iSpoonFit/iSpoonFit.entitlements
+iAdaptOps/Info.plist
+iAdaptOps/iAdaptOps.entitlements
 node_modules/
 *-debug.log
-iSpoonFitWidget/Info.plist
-iSpoonFitWidget/iSpoonFitWidget.entitlements
+iAdaptOpsWidget/Info.plist
+iAdaptOpsWidget/iAdaptOpsWidget.entitlements

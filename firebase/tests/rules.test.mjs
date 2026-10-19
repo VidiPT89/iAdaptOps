@@ -6,7 +6,7 @@ import { doc, getDoc, setDoc, getDocs, collection, deleteDoc } from 'firebase/fi
 import fs from 'fs';
 
 const env = await initializeTestEnvironment({
-  projectId: 'demo-ispoonfit',
+  projectId: 'demo-iadaptops',
   firestore: { rules: fs.readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8'), host: '127.0.0.1', port: 8080 },
 });
 await env.withSecurityRulesDisabled(async (c) => {

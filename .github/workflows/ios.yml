@@ -31,7 +31,7 @@ jobs:
 
       - name: Test
         run: |
-          xcodebuild -project iSpoonFit.xcodeproj \
-            -scheme iSpoonFit \
+          xcodebuild -project iAdaptOps.xcodeproj \
+            -scheme iAdaptOps \
             -destination "id=$SIMULATOR_UDID" \
             test

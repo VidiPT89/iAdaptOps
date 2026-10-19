@@ -4,7 +4,7 @@
 #  - REVERSED_CLIENT_ID: Google Sign-In (present once Google is enabled).
 #  - app-<GOOGLE_APP_ID>: Firebase's generic OAuth flow, used by Microsoft.
 set -eu
-CONFIG="$SRCROOT/iSpoonFit/Config/GoogleService-Info.plist"
+CONFIG="$SRCROOT/iAdaptOps/Config/GoogleService-Info.plist"
 PLIST="$TARGET_BUILD_DIR/$INFOPLIST_PATH"
 BUDDY=/usr/libexec/PlistBuddy
 

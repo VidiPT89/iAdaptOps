@@ -1,13 +1,17 @@
-# 🥄 iSpoonFit
+# 🤸 iAdaptOps
 
 > Gentle, caring exercise for people living with chronic conditions. A short health questionnaire shapes a personal 28-session plan: four days a week, 10 to 17 minutes, at home, with a chair and, if it suits you, a mat.
 
-[![Report Bug](https://img.shields.io/badge/Report-Bug-red)](https://github.com/VidiPT89/iSpoonFit/issues)
-[![Request Feature](https://img.shields.io/badge/Request-Feature-blue)](https://github.com/VidiPT89/iSpoonFit/issues)
-[![CI](https://github.com/VidiPT89/iSpoonFit/actions/workflows/ios.yml/badge.svg)](https://github.com/VidiPT89/iSpoonFit/actions/workflows/ios.yml)
+[![Report Bug](https://img.shields.io/badge/Report-Bug-red)](https://github.com/VidiPT89/iAdaptOps/issues)
+[![Request Feature](https://img.shields.io/badge/Request-Feature-blue)](https://github.com/VidiPT89/iAdaptOps/issues)
+[![CI](https://github.com/VidiPT89/iAdaptOps/actions/workflows/ios.yml/badge.svg)](https://github.com/VidiPT89/iAdaptOps/actions/workflows/ios.yml)
 
 <p align="center">
-  <img src="assets/sign-in.jpg" alt="iSpoonFit sign-in screen with email, Apple, Google and Microsoft accounts (shown in Portuguese, the app is bilingual)" width="280">
+  <img src="assets/logo.jpg" alt="iAdaptOps logo" width="420">
+</p>
+
+<p align="center">
+  <img src="assets/sign-in.jpg" alt="iAdaptOps sign-in screen with email and Apple accounts (shown in Portuguese, the app is bilingual)" width="280">
 </p>
 
 ## ✨ Features
@@ -65,17 +69,17 @@
 ### Installation
 
 ```bash
-git clone https://github.com/VidiPT89/iSpoonFit.git
-cd iSpoonFit
+git clone https://github.com/VidiPT89/iAdaptOps.git
+cd iAdaptOps
 xcodegen generate
-open iSpoonFit.xcodeproj
+open iAdaptOps.xcodeproj
 ```
 
 Build and run (`⌘R`) on the simulator or a connected device.
 
 ### Firebase
 
-The app talks to the Firebase project `ispoonfit-vidi`. Its iOS config lives in `iSpoonFit/Config/GoogleService-Info.plist`; after enabling a new sign-in provider in the console, refresh it with:
+The app talks to the Firebase project `ispoonfit-vidi`. Its iOS config lives in `iAdaptOps/Config/GoogleService-Info.plist`; after enabling a new sign-in provider in the console, refresh it with:
 
 ```bash
 sh scripts/fetch-firebase-config.sh
@@ -100,7 +104,7 @@ Language, appearance, sounds, voice, haptics, reminders and your account (sign o
 
 ## 🗓️ The Programme
 
-iSpoonFit is made for people living with chronic conditions: gentle, caring movement that adapts to the body and the energy of each person.
+iAdaptOps is made for people living with chronic conditions: gentle, caring movement that adapts to the body and the energy of each person.
 
 ### Personalized care plans
 
@@ -127,7 +131,7 @@ The admin can assign a fixed plan instead. **Ana's 28-day challenge** follows he
 ## 🧪 Testing
 
 ```bash
-xcodebuild -project iSpoonFit.xcodeproj -scheme iSpoonFit \
+xcodebuild -project iAdaptOps.xcodeproj -scheme iAdaptOps \
   -destination 'platform=iOS Simulator,name=iPhone 17' test
 ```
 
@@ -158,7 +162,7 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome. Feel free to check the [issues page](https://github.com/VidiPT89/iSpoonFit/issues).
+Contributions, issues and feature requests are welcome. Feel free to check the [issues page](https://github.com/VidiPT89/iAdaptOps/issues).
 
 ---
 

@@ -1,0 +1,3 @@
+/* Shown by iOS when the Health permission is requested. */
+"NSHealthUpdateUsageDescription" = "O iAdaptOps regista cada treino terminado na app Saúde.";
+"NSHealthShareUsageDescription" = "O iAdaptOps só regista treinos e nunca lê os teus dados de saúde.";

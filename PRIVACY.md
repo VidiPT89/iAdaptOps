@@ -1,8 +1,8 @@
 # Privacy Policy
 
-**iSpoonFit** · Last updated: 19 October 2026
+**iAdaptOps** · Last updated: 19 October 2026
 
-iSpoonFit needs an account so your programme and progress follow you between devices. This policy explains what that account stores and nothing more.
+iAdaptOps needs an account so your programme and progress follow you between devices. This policy explains what that account stores and nothing more.
 
 ## What is stored with your account
 
@@ -37,7 +37,7 @@ Workout reminders are local notifications scheduled on the device by iOS. They a
 
 ## Health notice
 
-iSpoonFit is a general fitness guide and not a medical device. Always consult a healthcare professional before starting.
+iAdaptOps is a general fitness guide and not a medical device. Always consult a healthcare professional before starting.
 
 ## Contact
 

@@ -1,4 +1,4 @@
-name: iSpoonFit
+name: iAdaptOps
 options:
   bundleIdPrefix: dev.ividi
   deploymentTarget:
@@ -21,12 +21,12 @@ packages:
     url: https://github.com/google/GoogleSignIn-iOS
     from: 9.0.0
 targets:
-  iSpoonFit:
+  iAdaptOps:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: iSpoonFit
+      - path: iAdaptOps
     dependencies:
       - package: Firebase
         product: FirebaseAuth
@@ -34,16 +34,16 @@ targets:
         product: FirebaseFirestore
       - package: GoogleSignIn
         product: GoogleSignIn
-      - target: iSpoonFitWidget
+      - target: iAdaptOpsWidget
     entitlements:
-      path: iSpoonFit/iSpoonFit.entitlements
+      path: iAdaptOps/iAdaptOps.entitlements
       properties:
         com.apple.developer.applesignin:
           - Default
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
         com.apple.security.application-groups:
-          - group.dev.ividi.ispoonfit
+          - group.dev.ividi.iadaptops
     postBuildScripts:
       - name: Register sign-in URL schemes
         basedOnDependencyAnalysis: false
@@ -52,14 +52,14 @@ targets:
           - $(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)
         script: sh "$SRCROOT/scripts/register-url-schemes.sh"
     info:
-      path: iSpoonFit/Info.plist
+      path: iAdaptOps/Info.plist
       properties:
-        CFBundleDisplayName: iSpoonFit
+        CFBundleDisplayName: iAdaptOps
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         # English here; the Portuguese text is in pt-PT.lproj/InfoPlist.strings.
-        NSHealthUpdateUsageDescription: iSpoonFit saves each finished session to the Health app as a workout.
-        NSHealthShareUsageDescription: iSpoonFit only saves workouts and never reads your health data.
+        NSHealthUpdateUsageDescription: iAdaptOps saves each finished session to the Health app as a workout.
+        NSHealthShareUsageDescription: iAdaptOps only saves workouts and never reads your health data.
         # Only standard HTTPS (Firebase): exempt, so TestFlight skips the
         # export-compliance question on every build.
         ITSAppUsesNonExemptEncryption: false
@@ -75,63 +75,63 @@ targets:
           - UIInterfaceOrientationLandscapeRight
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: dev.ividi.ispoonfit
+        PRODUCT_BUNDLE_IDENTIFIER: dev.ividi.iadaptops
         SWIFT_VERSION: "5.0"
         SWIFT_STRICT_CONCURRENCY: complete
         TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: YES
         ENABLE_USER_SCRIPT_SANDBOXING: NO
-  iSpoonFitWidget:
+  iAdaptOpsWidget:
     type: app-extension
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: iSpoonFitWidget
-      - path: iSpoonFit/Shared
+      - path: iAdaptOpsWidget
+      - path: iAdaptOps/Shared
     entitlements:
-      path: iSpoonFitWidget/iSpoonFitWidget.entitlements
+      path: iAdaptOpsWidget/iAdaptOpsWidget.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.dev.ividi.ispoonfit
+          - group.dev.ividi.iadaptops
     info:
-      path: iSpoonFitWidget/Info.plist
+      path: iAdaptOpsWidget/Info.plist
       properties:
-        CFBundleDisplayName: iSpoonFit
+        CFBundleDisplayName: iAdaptOps
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: dev.ividi.ispoonfit.widget
+        PRODUCT_BUNDLE_IDENTIFIER: dev.ividi.iadaptops.widget
         SWIFT_VERSION: "5.0"
         SWIFT_STRICT_CONCURRENCY: complete
         TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: YES
-  iSpoonFitTests:
+  iAdaptOpsTests:
     type: bundle.unit-test
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: iSpoonFitTests
+      - path: iAdaptOpsTests
     settings:
       base:
         SWIFT_VERSION: "5.0"
         SWIFT_STRICT_CONCURRENCY: complete
         GENERATE_INFOPLIST_FILE: YES
     dependencies:
-      - target: iSpoonFit
+      - target: iAdaptOps
 schemes:
-  iSpoonFit:
+  iAdaptOps:
     build:
       targets:
-        iSpoonFit: all
-        iSpoonFitTests: [test]
+        iAdaptOps: all
+        iAdaptOpsTests: [test]
     run:
       config: Debug
     test:
       config: Debug
       targets:
-        - iSpoonFitTests
+        - iAdaptOpsTests
     archive:
       config: Release
