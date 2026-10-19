@@ -46,6 +46,9 @@ struct TodayView: View {
         .scrollIndicators(.hidden)
         .onAppear {
             withAnimation(theme.springAnimation.delay(0.05)) { appeared = true }
+            #if DEBUG
+            if DebugLaunch.autoplay, let day = viewModel.nextDay { activeDay = viewModel.playable(day) }
+            #endif
         }
         .sheet(isPresented: $showsQuestionnaire) {
             HealthQuestionnaireSheet(viewModel: viewModel)

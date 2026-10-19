@@ -16,6 +16,8 @@ enum DebugLaunch {
     static var tab: String? { environment["ISPOONFIT_TAB"] }
     static var lowEnergy: Bool { environment["ISPOONFIT_LOWENERGY"] == "1" }
     static var seated: Bool { environment["ISPOONFIT_SEATED"] == "1" }
+    /// Opens the guided session for the next workout straight away.
+    static var autoplay: Bool { environment["ISPOONFIT_PLAY"] == "1" }
 
     /// Starts a program a few weeks back with `demoSessions` done on their
     /// own training days, all before today, so Today, Program and History
